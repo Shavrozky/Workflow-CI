@@ -1,3 +1,4 @@
+from sklearn.metrics._plot import precision_recall_curve
 import os
 import pandas as pd
 import mlflow
