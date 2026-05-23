@@ -73,9 +73,28 @@ def main():
     mlflow.log_metric("recall", recall)
     mlflow.log_metric("f1_score", f1)
 
+    conda_env = {
+        "name": "credit-scoring-model-env",
+        "channels": ["conda-forge"],
+        "dependencies": [
+            "python=3.10.13",
+            "pip",
+            {
+                "pip": [
+                    "mlflow==2.19.0",
+                    "scikit-learn",
+                    "pandas",
+                    "numpy",
+                    "cloudpickle"
+                ]
+            }
+        ]
+    }
+
     mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path="model",
+        conda_env=conda_env,
         input_example=X_train.head(5)
     )
 
