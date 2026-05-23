@@ -7,6 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("Credit Scoring CI Experiment")
+
 
 DATA_PATH = "credit_scoring_preprocessing/credit_scoring_preprocessed.csv"
 EXPERIMENT_NAME = "Credit Scoring CI Experiment"
