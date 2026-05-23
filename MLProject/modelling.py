@@ -9,9 +9,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 
 DATA_PATH = "credit_scoring_preprocessing/credit_scoring_preprocessed.csv"
-EXPERIMENT_NAME = "Credit Scoring CI Experiment"
-
-mlflow.set_experiment(EXPERIMENT_NAME)
 
 
 def get_target_column(df):
@@ -57,38 +54,35 @@ def main():
         random_state=42
     )
 
-    # Dalam mlflow run, MLflow sudah membuat run utama.
-    # start_run() ini akan memakai run tersebut jika MLFLOW_RUN_ID tersedia.
-    with mlflow.start_run():
-        model.fit(X_train, y_train)
+    model.fit(X_train, y_train)
 
-        y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
 
-        accuracy = accuracy_score(y_test, y_pred)
-        precision = precision_score(y_test, y_pred, average="weighted", zero_division=0)
-        recall = recall_score(y_test, y_pred, average="weighted", zero_division=0)
-        f1 = f1_score(y_test, y_pred, average="weighted", zero_division=0)
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average="weighted", zero_division=0)
+    recall = recall_score(y_test, y_pred, average="weighted", zero_division=0)
+    f1 = f1_score(y_test, y_pred, average="weighted", zero_division=0)
 
-        mlflow.log_param("model", "RandomForestClassifier")
-        mlflow.log_param("n_estimators", 100)
-        mlflow.log_param("max_depth", 10)
-        mlflow.log_param("target_column", target_col)
+    mlflow.log_param("model", "RandomForestClassifier")
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_param("max_depth", 10)
+    mlflow.log_param("target_column", target_col)
 
-        mlflow.log_metric("accuracy", accuracy)
-        mlflow.log_metric("precision", precision)
-        mlflow.log_metric("recall", recall)
-        mlflow.log_metric("f1_score", f1)
+    mlflow.log_metric("accuracy", accuracy)
+    mlflow.log_metric("precision", precision)
+    mlflow.log_metric("recall", recall)
+    mlflow.log_metric("f1_score", f1)
 
-        mlflow.sklearn.log_model(
-            sk_model=model,
-            artifact_path="model",
-            input_example=X_train.head(5)
-        )
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path="model",
+        input_example=X_train.head(5)
+    )
 
-        print("Accuracy:", accuracy)
-        print("Precision:", precision)
-        print("Recall:", recall)
-        print("F1 Score:", f1)
+    print("Accuracy:", accuracy)
+    print("Precision:", precision)
+    print("Recall:", recall)
+    print("F1 Score:", f1)
 
 
 if __name__ == "__main__":
