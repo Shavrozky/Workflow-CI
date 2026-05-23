@@ -7,12 +7,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-mlflow.set_tracking_uri("file:./mlruns")
-mlflow.set_experiment("Credit Scoring CI Experiment")
-
 
 DATA_PATH = "credit_scoring_preprocessing/credit_scoring_preprocessed.csv"
 EXPERIMENT_NAME = "Credit Scoring CI Experiment"
+
+mlflow.set_experiment(EXPERIMENT_NAME)
 
 
 def get_target_column(df):
@@ -58,7 +57,9 @@ def main():
         random_state=42
     )
 
-    with mlflow.start_run(run_name="RandomForest_CI"):
+    # Dalam mlflow run, MLflow sudah membuat run utama.
+    # start_run() ini akan memakai run tersebut jika MLFLOW_RUN_ID tersedia.
+    with mlflow.start_run():
         model.fit(X_train, y_train)
 
         y_pred = model.predict(X_test)
@@ -80,7 +81,8 @@ def main():
 
         mlflow.sklearn.log_model(
             sk_model=model,
-            artifact_path="model"
+            artifact_path="model",
+            input_example=X_train.head(5)
         )
 
         print("Accuracy:", accuracy)
